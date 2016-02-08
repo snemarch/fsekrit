@@ -1,0 +1,84 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*** Release History:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+version 1.40 - December 3, 2009 - 90kb/45.5kb
+
+- fixed:  long-standing bug where failing to save changes when closing fSekrit
+  with a modified document would cause fSekrit to exit, rather than notifying of
+  error and let user attempt to save again.
+- fixed:  saves are *finally* done properly, by saving to a temporary file and
+  replacing the current file only when all the file writing business is done.
+- added:  font selection dialog, no longer do you need to much around with the
+  registry to set another default font. The font is still not stored in your
+  document, though, and is single global per-user registry setting.
+- added: "portable" mode, which (for now) means it will not use %TEMP% to store
+  it's temporary editor executable, but instead store it in the same folder as
+  the opened document. Registry is still used for font selection, though!
+  To enabel this feature, create a file called "fSekrit.portable" in the same
+  folder as the document you want to function in portable mode.
+- added: URLs are now recognized and turned into hyperlinks.
+- fixed: Read-only notes should be a lot more sane - changed from confusing
+  "make read-only" that half-worked to "Save As Read-only" that works :)
+- fixed: Win9x and NT4 support has been broken since version 1.35. Release builds
+  are now done with an older compiler toolchain, and 9x/NT4 support is back :)
+
+----------
+
+version 1.35 - December 23, 2007 - 100kb/50.5kb
+
+- fixed:  file->export appends ".txt" instead of ".exe" if no extension given.
+- fixed:  file->new now clears passphrase and read-only state.
+- fixed:  menu items are now properly enabled/disabled depending on read-only
+  state and whether text field is empty or not.
+- added:  drag&drop support: you can now drop a text file onto the fSekrit
+  window, and fSekrit will load the dropped file.
+- added:  right-click popup menu with edit actions
+- added:  redo support
+- added:  unicode text support (only the note text, not filenames yet)
+- added:  now everything sensitive is always wiped from memory after use,
+  as far as it's possible (with the exception of the RichEdit control).
+
+----------
+
+version 1.3 - November 18, 2007 - 99.5kb/50.5kb
+
+- added:  read-only notes, finally :)
+- bugfix: changing key on unsaved document would crash
+- bugfix: saving an empty document would crash
+- bugfix: running fSekrit.exe (w/o embedded note) from a CD was unable to
+  Save As because read-only file attribute wasn't cleared on destination.
+
+This release was actually meant to be released on 15th October 2006, but
+due to the phase of the moon and real-life work, got postponed for over a
+year. Sorry.
+
+----------
+
+version 1.2 - September 15, 2006 - 98.5kb/50.0kb
+
+- improved security a bit (randomized IV)
+- fSekrit now saves without "flickering in and out of existance"!
+- you can now specify a custom font. I haven't added a GUI setting for this,
+  but it's tweakable from regedit. You can create fontface:string and
+  fontsize:dword values under HKEY_CURRENT_USER\Software\flork.dk\fSekrit .
+- import and export plain text
+- win9x: now handles large encrypted notes
+
+----------
+
+version 1.1 - April 11, 2006 - 75.5kb/39.5kb
+- bunch of misc. bugfixes
+- added menu items for most functions (were already available through keyboard
+  shortcuts)
+- added edit->find
+- internal preparation for unicode support and other goodies
+
+PLANNED: secure file wipe, better process model (slightly safer and more
+convenient), drag-and-drop encryption, unicode support, additional encryption
+tools, and of course smaller filesize :)
+
+----------
+
+version 1.0 - January 31, 2006 - 76kb/39.0kb
+ first public release.

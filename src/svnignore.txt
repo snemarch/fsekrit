@@ -1,0 +1,2 @@
+*.vcproj*.user
+resource.aps

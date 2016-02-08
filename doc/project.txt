@@ -1,0 +1,156 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BUILD REQUIREMENTS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When developing fSekrit, currently (November 2009) Visual Studio 2008 is used,
+and building, debugging etc. is done from within the IDE. VS2008, however, does
+not support targetting NT4 and Win9x, so for release versions of fSekrit, an
+older compiler version is needed... and that also poses some problems concerning
+the PlatformSDK version used. The PSDK included with VS2008 uses function
+annotations, which rely on a header file not shipped with PSDK but with VS2008,
+for instance.
+
+So, for release builds, a combination of the vc2003 toolkit (shame it's not
+available for download from Microsoft anymore!) and the Windows 2003 Server
+edition of PlatformSDK was chosen (mainly because I had that lying around).
+Other combinations might work, but this is what I'm building & testing with.
+
+When installing the SDK, you'll need to install at least the Core SDK and the
+Internet Development SDK - if you don't install the Internet Development SDK,
+you'll miss the shlwapi.h header file, *sigh*.
+
+Additionally, you'll need to install Python and the SCons build system - I'm
+currently using 32-bit Python 2.6 along with scons-1.2.0.d20090919.win32 .
+And then you'll need to set two environment variables before running scons:
+VCToolkitInstallDir - base folder of VC2003 toolkit
+PlatformSDKInstallDir - base folder of PlatformSDK
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*** mass textfile conversion?
+	Some secondary tool should be written, to
+	keep fSekrit.exe size small. When doing text conversion,
+	first the document should be checked for a BOM and handled
+	accordingly. If not present, scan the first ~1k or so to
+	determine whether it's "mostly ascii". If deemed to be
+	binary, user should be given a choice on how to interpret
+	the data. ASCII data will be read in ascii, then converted
+	to unicode/utf8 (possibly going windows ascii -> windows
+	wide -> multibyte/utf8, depending on what's easiest to do).
+	fSekrit's own format should natively be UTF-8.
+
+
+*** ACID saves. "succeed 100% or make no modifications". Will be
+	a lot easier to implement after "new way to save etc." is
+	done, and should actually be a part of that item.
+	When saving, do the following:
+	1) save to tempfile in same folder as document
+	2) rename document to DOCNAME~ (ie, prefix tilde)
+	3) rename tempfile to DOCNAME
+	4) wipe DOCNAME~
+
+	of course don't proceed if any step fails. Wipe can start as
+	just a delete, but for further security a decent wipe
+	probably should be performed (ie, do NOT use all-zeroes, as
+	that can be detected & optimized by some filesystems).
+
+*** Unicode support
+
+*** Windows Mobile edition
+
+*** --perhaps-- a tabbed interface, and multiple "steams" per file...
+
+Restructure. "sekrit" shouldn't include things like fileheader - it should be a
+self-contained class for nothing but storing text in encrypted form. 
+
+- "self-destruct" - wipe own exe. Probably with code injection to running process.
+
+- better error detection!
+
+[04:22:38] <mouser> delf destruct wipe should require you enter pass to confirm
+
+[04:22:19] <mouser> another feature request: ctrl+s for save, ctrl+a for save as
+  (and ctrl+a, ctrl+c, ctrl+v, shift+del, shift+ins, ...)
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DONE:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-[1.35]
+	menu entries and mouse right-click for the editing features
+	that people expect. Appearantly people don't know about
+	keyboard shortcuts :)
+
+	drag-drop to the fSekrit window should open the dropped file
+	(thus, only single-file drop will work).
+
+-[1.2]
+	New way of saving. Instead of lots of juggling with exe files, fSekrit will
+	copy itself to "%temp%\fSekrit-%04X.exe" if it has an embedded note (the
+	copy is just the editor part, the not is *not* copied!). Then this temp exe
+	will be launched to edit the real note file.
+
+	Lots of advantages over the old method; no more "-pos:x,y" and AES key being
+	specified on commandline, no more "window flickering in and out of existance
+	on save", et cetera.
+
+	Save "IsMaximized" along with window size!
+
+	when copying exe for various purposes, perhaps file-end-data shouldn't be
+	included in the copy.
+
+	Don't just hash plaintext. Hash (plaintext,IV). That way,
+ 	not only can't two ciphertexts of identical text/passphrase
+	combinations be compared, their hash can't be compared either.
+
+	when doing file->exit and user says yes to "save file?", it pops open again
+	after saving... add a "-exit" switch or something. - handled because of
+	new save/proces model.
+
+  
+[1.1]
+- when pressing "cancel" to passphrase on open, terminate
+
+- XTEA CBC encryption
+  (now removed in favor of AES)
+
+- Save to .exe file, .exe with appended data will ask for passphrase etc.
+
+- set titlebar according to currently edited file
+
+- editwindow: too large, something like 640x480 centered, or perhaps some
+  percentage of current desktop size.
+  DONE: 640x480 centered
+
+- saveas: should default to current dir (and be centered)
+
+- saveas: add the default extension if none typed
+
+- save. When saving to .exe (the exe of current process), this involves some file-copying trickery. 
+
+- AES/Rijndael encryption
+  DONE: 256bit Rijndael, baby
+
+- don't let user overwrite fsekrit.exe
+  Sorta done. Won't let user "save" unless exe has data; "save as" takes
+  care of this.
+
+- add a file->new
+- re-launch exe on save
+  Both are done.
+
+- don't crash when manipulating empty document
+  Fixed
+
+- SUPPORT PATHS WITH SPACES!
+  Fixed
+
+- <mouser> "10) save window size and position! otherwise if you move window,
+  click save, it jumps to center of screen."
+  DONE: Saves width,height in file, passes x,y on cmdline.
+
+- word-wrap (and ability to turn on/off?)
+  DONE: wordwrap, no on/off though

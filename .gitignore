@@ -1,0 +1,8 @@
+bin
+dist
+obj
+stuff
+*.ncb
+*.suo
+*.vcproj*.user
+.sconsign.dblite

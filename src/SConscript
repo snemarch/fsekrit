@@ -1,0 +1,20 @@
+libpath = []
+extlibs = Split('kernel32 user32 comdlg32 comctl32 gdi32 advapi32 shell32 shlwapi')
+
+Import('env')
+# env['CPPPATH'] = '.'
+# env['LIBPATH'] = libpath
+env['LIBS'] = extlibs
+
+resfile = env.RES('resource.rc')
+
+sourcefiles = Split("""
+	DlgAbout.cpp		DlgPass1.cpp		DlgPass2.cpp
+	Document.cpp		editor.cpp		File.cpp
+	FileEndData.cpp	FindReplace.cpp	font.cpp
+	globals.cpp		hyperlink.cpp	main.cpp
+	Plaintext.cpp	sekrit.cpp		sha256.cpp
+	util.cpp
+	aes/aescrypt.c	aes/aeskey.c		aes/aestab.c	aes/aes_modes.c""") + resfile
+
+env.Program(target = 'fSekrit', source = sourcefiles)
